@@ -17,6 +17,7 @@
       - 固定表头顺序（按 `headers` 指定），避免字段顺序错乱
       - 支持嵌套字段访问（如 `user.name`）和自定义格式化函数
       - 可设置列宽，兼容常见浏览器和 Node 环境的文件导出
+      - 更多配置可见文件
 	- 简要使用：
 
 		```powershell
@@ -24,68 +25,135 @@
 		```
 		
 		```javascript
-		import { exportSingleSheetXlsx, exportMultiSheetXlsx } from './export-excel/exportXlsx.js';
+		const singleSheetData = [
+			{ 
+				id: 1, 
+				user: { name: '张三', dept: '技术部' }, // 嵌套字段
+				age: 25, 
+				salary: 15000, // 整数
+				bonus: 2345.67, // 2位小数
+				rate: 0.85, // 1位小数（decimalPlaces=4 时显示 0.85）
+				joinTime: '2023-01-15', // 日期字符串
+				status: 1 
+			},
+			{ 
+				id: 2, 
+				user: { name: '李四', dept: '产品部' },
+				age: 28, 
+				salary: 18000.5, // 1位小数
+				bonus: 3456.123, // 3位小数（decimalPlaces=2 时显示 3456.12）
+				rate: 0.9, // 1位小数
+				joinTime: new Date('2022-05-20'), // Date 对象
+				status: 0 // 0值（无小数点）
+			},
+			{ 
+				id: 3, 
+				user: { name: '王五', dept: '运营部' },
+				age: 30, 
+				salary: 16500.89, // 2位小数
+				bonus: 0, // 0值（无小数点）
+				rate: 0.789, // 3位小数
+				joinTime: '2021-09-30',
+				status: 1 
+			},
+			{}, // 空行（会被过滤）
+			{ 
+				id: 4, 
+				user: { name: '赵六', dept: '市场部' },
+				age: '32', // 字符串格式整数
+				salary: '20000.123', // 字符串格式小数
+				bonus: 4567.1234, // 4位小数（decimalPlaces=3 时显示 4567.123）
+				rate: 1.0, // 整数（显示 1）
+				joinTime: '2020-03-10',
+				status: 1 
+			},
+			{ 
+				id: 5, 
+				user: { name: '', dept: '' }, // 部分字段为空
+				age: '', 
+				salary: 0.0, // 0值（无小数点）
+				bonus: '', 
+				rate: 0.00, // 0值（无小数点）
+				joinTime: '',
+				status: 0 
+			}
+		];
 
-		// 单表示例
+		// 2. 单 Sheet 列配置
+		const singleSheetColumns = [
+			{ 
+				key: 'id', 
+				title: '员工ID', 
+				type: 'number', 
+				decimalPlaces: 0, // 整数
+				width: 10 
+			},
+			{ 
+				key: 'user.name', 
+				title: '姓名', 
+				type: 'string', 
+				width: 12,
+				formatFn: (item) => item.user.name || '未知姓名' // 格式化空值
+			},
+			{ 
+				key: 'user.dept', 
+				title: '部门', 
+				type: 'string', 
+				width: 12 
+			},
+			{ 
+				key: 'age', 
+				title: '年龄', 
+				type: 'number', 
+				decimalPlaces: 0, // 整数
+				width: 8 
+			},
+			{ 
+				key: 'salary', 
+				title: '基础薪资', 
+				type: 'number', 
+				decimalPlaces: 2, // 2位小数（0 显示为 0）
+				width: 14 
+			},
+			{ 
+				key: 'bonus', 
+				title: '绩效奖金', 
+				type: 'number', 
+				decimalPlaces: 3, // 3位小数（0 显示为 0）
+				width: 14 
+			},
+			{ 
+				key: 'rate', 
+				title: '绩效系数', 
+				type: 'number', 
+				decimalPlaces: 4, // 4位小数（0.85 显示为 0.85）
+				width: 12 
+			},
+			{ 
+				key: 'joinTime', 
+				title: '入职时间', 
+				type: 'date', 
+				dateFormat: 'yyyy-mm-dd', // 日期格式
+				width: 16,
+				formatFn: (item) => item.joinTime ? new Date(item.joinTime) : '' // 日期格式化
+			},
+			{ 
+				key: 'status', 
+				title: '状态', 
+				type: 'string', 
+				width: 10,
+				formatFn: (item) => item.status === 1 ? '在职' : '离职' // 状态映射
+			}
+		];
+		// 3. 执行单 Sheet 导出
 		exportSingleSheetXlsx({
-			headers: ['姓名', '年龄', '邮箱'],
-			data: [
-				{ name: '张三', age: 25, contact: { email: 'zhangsan@example.com' } },
-				{ name: '李四', age: 30, contact: { email: 'lisi@example.com' } }
-			],
-			sheetName: '用户列表',
-			fileName: '用户信息表',
-			colWidths: [15, 8, 30],
-			formatFn: (item, header) => {
-				switch (header) {
-					case '姓名': return item.name;
-					case '年龄': return `${item.age}岁`;
-					case '邮箱': return item.contact?.email || '';
-					default: return '';
-				}
-			}
+			fileName: '员工基础信息报表_2025', // 导出文件名
+			sheetName: '员工信息', // Sheet 名称
+			columns: singleSheetColumns, // 列配置
+			data: singleSheetData, // 数据
+			ignoreEmptyRows: true // 启用空行过滤（默认 true，可省略）
 		});
 		```
-
-		```javascript
-		// 多表示例
-		const sheet1 = {
-			sheetName: '用户表',
-			headers: ['姓名', '年龄'],
-			data: [
-				{ name: '张三', age: 25 }
-			],
-			colWidths: [15, 8]
-		};
-
-		const sheet2 = {
-			sheetName: '订单表',
-			headers: ['订单号', '金额'],
-			data: [
-				{ orderNo: 'OD001', amount: 100 }
-			],
-			formatFn: (item, header) => {
-				if (header === '金额') return `${item.amount}元`;
-				return item[header.toLowerCase()];
-			}
-		};
-
-		exportMultiSheetXlsx({
-			sheets: [sheet1, sheet2],
-			fileName: '用户订单汇总'
-		});
-		```
-
-		- `exportMultiSheetXlsx({ sheets, fileName })`
-  		  - `sheets`: Array<SheetConfig>
-	      - `sheetName` (string) 必填
-	      - `headers` (string[]) 必填，决定列顺序
-	      - `data` (Object[]) 必填
-	      - `colWidths` (number[]) 可选，与 `headers` 对应
-	      - `formatFn` (item, header, rowIndex) 可选，返回单元格显示值
-		  - `fileName` (string) 可选（不含后缀）
-		- 返回 `true` | `false` 表示导出是否成功
-		- `exportSingleSheetXlsx(config)`：简化调用（内部调用 `exportMultiSheetXlsx`）
 
 
 
