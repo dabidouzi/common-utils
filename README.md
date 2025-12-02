@@ -2,46 +2,78 @@
 # common-utils
 
 一个轻量的实用工具集合，包含方便在前端/Node 环境中导出多 Sheet / 单 Sheet 的 XLSX 导出工具。
+# common-utils
 
-## 特性
+一个聚焦于 XLSX 导出的轻量工具集，适用于浏览器与 Node.js。当前仓库提供基于 `xlsx` 的单表/多表导出实现及示例。
+
+## 亮点
 
 - 支持单 Sheet 与多 Sheet 导出
-- 保持表头顺序一致，支持嵌套字段（例如 `user.name`）
-- 可自定义列宽与数据格式化函数
-- 兼容浏览器下载与 Node 环境文件写入（基于 `xlsx` 库）
+- 固定表头顺序（按 `headers` 指定），避免字段顺序错乱
+- 支持嵌套字段访问（如 `user.name`）和自定义格式化函数
+- 可设置列宽，兼容常见浏览器和 Node 环境的文件导出
 
-## 目录结构
+## 文件说明
 
-- `export-excel/exportXlsx.js`：核心导出实现（ESM 模块，包含示例）
+- `export-excel/exportXlsx.js`：导出工具核心实现（ESM），内含单表/多表示例代码
+- `README.md`：项目说明（本文件）
 - `LICENSE`：许可证
 
-## 安装
+## 现有工具类一览
 
-本仓库为工具集合示例，若在项目中使用，请先安装依赖：
+仓库目前包含以下实用工具（按目录）：
+
+- `export-excel/exportXlsx.js` — XLSX 导出
+	- 功能：支持单 Sheet 与多 Sheet 导出，固定表头顺序，支持嵌套字段与自定义格式化函数，支持列宽设置。
+	- 适用场景：需要把后端或前端表格数据导出为 Excel 文件的场景（浏览器端下载或 Node 写入）。
+	- 简要使用：
+		```javascript
+		import { exportSingleSheetXlsx } from './export-excel/exportXlsx.js'
+		exportSingleSheetXlsx({ headers: ['姓名','年龄'], data: [{ name: '张三', age: 25 }], fileName: '示例' })
+		```
+
+- `vue-compose-element/index.js` — 在运行时返回 Vue 组件 DOM
+	- 功能：动态创建一个 Vue 应用并挂载传入组件，返回组件的 DOM 元素（`$el`）。内部会使用项目路由实例。
+	- 适用场景：需要把 Vue 单文件组件渲染成原生 DOM（例如在非 Vue 插件/第三方组件中嵌入 Vue 组件）。
+	- 简要使用：
+		```javascript
+		import MyComponent from '@/components/MyComponent.vue'
+		import { returnVueComponentElement } from 'vue-compose-element'
+		const el = returnVueComponentElement(MyComponent, { propA: 1 })
+		document.body.appendChild(el)
+		```
+
+- `water/water-type.js` — 水质等级与颜色映射（Vue 组合式写法）
+	- 功能：导出水质等级数组 `typeList` 与基于等级返回颜色的计算属性 `backColor`。
+	- 适用场景：在水质相关展示页面中根据等级渲染不同颜色或标签。
+	- 简要使用（在 Vue 组件中）：
+		```javascript
+		import { typeList, backColor } from '@/water/water-type.js'
+		// 在模板中： :style="{ background: backColor(3) }"
+		```
+
+如果你希望我把每个工具改成更独立的包、补充 TypeScript 类型定义或为每个工具添加更详细示例（包含 demo 页面/脚本），告诉我你偏好，我可以继续实现。
+
+## 快速开始
+
+1. 安装依赖：
 
 ```powershell
 npm install xlsx
 ```
 
-如果你的项目使用 CommonJS，请确保构建或将模块适配为 CommonJS。
-
-## 用法（示例）
-
-在支持 ESM 的环境中，你可以直接引入并调用导出方法：
+2. 在 ESM 环境中引入并使用（示例）：
 
 ```javascript
 import { exportSingleSheetXlsx, exportMultiSheetXlsx } from './export-excel/exportXlsx.js';
 
-// 单 Sheet 示例
-const headers = ['姓名', '年龄', '邮箱'];
-const data = [
-	{ name: '张三', age: 25, contact: { email: 'zhangsan@example.com' } },
-	{ name: '李四', age: 30, contact: { email: 'lisi@example.com' } }
-];
-
+// 单表示例
 exportSingleSheetXlsx({
-	headers,
-	data,
+	headers: ['姓名', '年龄', '邮箱'],
+	data: [
+		{ name: '张三', age: 25, contact: { email: 'zhangsan@example.com' } },
+		{ name: '李四', age: 30, contact: { email: 'lisi@example.com' } }
+	],
 	sheetName: '用户列表',
 	fileName: '用户信息表',
 	colWidths: [15, 8, 30],
@@ -54,38 +86,40 @@ exportSingleSheetXlsx({
 		}
 	}
 });
+```
 
-// 多 Sheet 示例
+```javascript
+// 多表示例
 const sheet1 = { sheetName: '用户表', headers: ['姓名', '年龄'], data: [{ name: '张三', age: 25 }], colWidths: [15, 8] };
 const sheet2 = { sheetName: '订单表', headers: ['订单号', '金额'], data: [{ orderNo: 'OD001', amount: 100 }], formatFn: (item, header) => header === '金额' ? `${item.amount}元` : item[header.toLowerCase()] };
 
 exportMultiSheetXlsx({ sheets: [sheet1, sheet2], fileName: '用户订单汇总' });
 ```
 
-## API 说明
+## API（简要）
 
-- `exportMultiSheetXlsx({ sheets, fileName })`：导出多 Sheet 文件，参数说明：
-	- `sheets`：数组，每项是 Sheet 配置对象，包含：
-		- `sheetName` (string) - 必填，工作表名称
-		- `headers` (string[]) - 必填，表头字段（顺序决定列顺序）
-		- `data` (Object[]) - 必填，数据数组
-		- `colWidths` (number[]) - 可选，列宽配置，与 `headers` 顺序对应
-		- `formatFn` (Function) - 可选，`(item, header, rowIndex) => value`，用于格式化每个单元格的值
-	- `fileName` (string) - 可选，导出文件名（不含后缀，默认自动生成）
+- `exportMultiSheetXlsx({ sheets, fileName })`
+	- `sheets`: Array<SheetConfig>
+		- `sheetName` (string) 必填
+		- `headers` (string[]) 必填，决定列顺序
+		- `data` (Object[]) 必填
+		- `colWidths` (number[]) 可选，与 `headers` 对应
+		- `formatFn` (item, header, rowIndex) 可选，返回单元格显示值
+	- `fileName` (string) 可选（不含后缀）
+	- 返回 `true` | `false` 表示导出是否成功
 
-- `exportSingleSheetXlsx(config)`：单 Sheet 简化调用，等价于调用 `exportMultiSheetXlsx` 并将 `config` 包装为单元素 `sheets`。
+- `exportSingleSheetXlsx(config)`：简化调用（内部调用 `exportMultiSheetXlsx`）
 
-返回值：函数会返回 `true` 或 `false` 表示导出是否成功（函数内部会在控制台打印详细信息）。
+## 说明与建议
 
-## 开发 & 贡献
+- 当前实现为 ESM 模块；若在 CommonJS 项目中使用，请通过打包或改写为 CommonJS 导出。
+- `formatFn` 推荐用于列名与对象字段不同或需格式化（日期、货币等）的场景。
 
-- 欢迎提交 issue 或 PR，对示例、兼容性和文档进行改进。
-- 注意：当前文件为 ESM 模块，若在 CommonJS 项目中使用，请根据需要进行转换或通过打包工具（如 webpack/rollup）处理。
+## 开发与贡献
+
+- 欢迎提交 issue 或 PR：改进示例、添加 TypeScript 支持或增强兼容性。
+- 如需我为项目添加 `package.json`、TypeScript 类型文件或演示脚本，请告知偏好，我会继续补充。
 
 ## 许可证
 
-本仓库使用 `LICENSE` 中声明的许可证。
-
----
-
-如果你需要我为 README 添加更详细的 API 文档、TypeScript 类型定义示例或演示项目（包含 package.json），告诉我你的偏好，我会继续完善。
+详见仓库根目录的 `LICENSE`。
