@@ -82,15 +82,14 @@
 		```
 
 		- `exportMultiSheetXlsx({ sheets, fileName })`
-		- `sheets`: Array<SheetConfig>
-			- `sheetName` (string) 必填
-			- `headers` (string[]) 必填，决定列顺序
-			- `data` (Object[]) 必填
-			- `colWidths` (number[]) 可选，与 `headers` 对应
-			- `formatFn` (item, header, rowIndex) 可选，返回单元格显示值
-		- `fileName` (string) 可选（不含后缀）
+  		  - `sheets`: Array<SheetConfig>
+	      - `sheetName` (string) 必填
+	      - `headers` (string[]) 必填，决定列顺序
+	      - `data` (Object[]) 必填
+	      - `colWidths` (number[]) 可选，与 `headers` 对应
+	      - `formatFn` (item, header, rowIndex) 可选，返回单元格显示值
+		  - `fileName` (string) 可选（不含后缀）
 		- 返回 `true` | `false` 表示导出是否成功
-
 		- `exportSingleSheetXlsx(config)`：简化调用（内部调用 `exportMultiSheetXlsx`）
 
 - `vue-compose-element/index.js` — 在运行时返回 Vue 组件 DOM
