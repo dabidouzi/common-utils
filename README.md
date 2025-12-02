@@ -98,6 +98,44 @@
 		// 在模板中： :style="{ background: waterColor(3) }"
 		```
 
+- `date-utils/index.js` — 日期工具函数库
+	- 功能：提供日期格式化、范围计算（今日、昨日、本周、本月、近7天）、日期差计算、日期列表生成、日期验证等便捷方法。
+	- 适用场景：需要处理日期范围选择、日期格式化、日期计算等前端常见场景。
+	- 简要使用：
+		```javascript
+		import { formatDate, getTodayRange, getThisWeekRange, getLast7DaysRange, getDateRange, getDaysDiff } from './date-utils/index.js'
+		
+		// 格式化日期
+		const dateStr = formatDate(new Date()) // '2025-12-02'
+		
+		// 获取日期范围
+		const today = getTodayRange() // { startTime: '2025-12-02', endTime: '2025-12-02' }
+		const thisWeek = getThisWeekRange() // { startTime: '2025-11-24', endTime: '2025-11-30' }
+		const last7Days = getLast7DaysRange() // { startTime: '2025-11-25', endTime: '2025-12-02' }
+		
+		// 获取日期列表
+		const dates = getDateRange('2025-12-01', '2025-12-03') // ['2025-12-01', '2025-12-02', '2025-12-03']
+		
+		// 计算日期差
+		const days = getDaysDiff('2025-12-01', '2025-12-03') // 2
+		
+		// 快速预设选择
+		import { getDateByPreset } from './date-utils/index.js'
+		const range = getDateByPreset('thisMonth') // 获取本月范围
+		const range2 = getDateByPreset('last7Days') // 获取近7天范围
+		```
+	- 导出方法：
+		- `formatDate(date)` - 格式化为 YYYY-MM-DD
+		- `getTodayRange()` - 今日范围
+		- `getYesterdayRange()` - 昨日范围
+		- `getThisWeekRange()` - 本周范围（周一到周日）
+		- `getThisMonthRange()` - 本月范围
+		- `getLast7DaysRange()` - 近7天范围（含今日）
+		- `getDateRange(startDate, endDate)` - 范围内日期列表
+		- `getDateByPreset(preset)` - 快速预设选择（'today'、'yesterday'、'thisWeek'、'thisMonth'、'last7Days'）
+		- `getDaysDiff(date1, date2)` - 日期差计算
+		- `isValidDateFormat(dateStr)` - 日期格式验证
+
 - `mqtt/index.js` — MQTT 客户端封装
 	- 功能：基于 `mqtt`（npm 包）封装的轻量客户端类 `MQTTClient`，支持连接、订阅、接收消息、发送和断开连接。
 	- 适用场景：需要通过 WebSocket 或 TCP 与 MQTT Broker 通信时使用（例如实时数据推送、设备消息接收）。
