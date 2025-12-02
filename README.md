@@ -1,21 +1,13 @@
 
 # common-utils
-
-一个轻量的实用工具集合，包含方便在前端/Node 环境中导出多 Sheet / 单 Sheet 的 XLSX 导出工具。
-# common-utils
-
-一个聚焦于 XLSX 导出的轻量工具集，适用于浏览器与 Node.js。当前仓库提供基于 `xlsx` 的单表/多表导出实现及示例。
-
-## 亮点
-
-- 支持单 Sheet 与多 Sheet 导出
-- 固定表头顺序（按 `headers` 指定），避免字段顺序错乱
-- 支持嵌套字段访问（如 `user.name`）和自定义格式化函数
-- 可设置列宽，兼容常见浏览器和 Node 环境的文件导出
+一个轻量的实用工具集合
 
 ## 文件说明
-
-- `export-excel/exportXlsx.js`：导出工具核心实现（ESM），内含单表/多表示例代码
+- `export-excel/exportXlsx.js` XLSX 导出
+- `vue-compose-element` 在运行时返回 Vue 组件 DOM
+- `water/water-type.js` 水质等级与颜色映射（Vue 组合式写法）
+- `mqtt/index.js` MQTT 客户端封装
+- `svg-icon` SVG 图标管理
 - `README.md`：项目说明（本文件）
 - `LICENSE`：许可证
 
@@ -26,6 +18,10 @@
 - `export-excel/exportXlsx.js` — XLSX 导出
 	- 功能：支持单 Sheet 与多 Sheet 导出，固定表头顺序，支持嵌套字段与自定义格式化函数，支持列宽设置。
 	- 适用场景：需要把后端或前端表格数据导出为 Excel 文件的场景（浏览器端下载或 Node 写入）。
+      - 支持单 Sheet 与多 Sheet 导出
+      - 固定表头顺序（按 `headers` 指定），避免字段顺序错乱
+      - 支持嵌套字段访问（如 `user.name`）和自定义格式化函数
+      - 可设置列宽，兼容常见浏览器和 Node 环境的文件导出
 	- 简要使用：
 
 		```powershell
@@ -140,7 +136,7 @@
 		client.disconnect()
 		```
 
-- `svg-icon/` — SVG 图标管理
+- `svg-icon` — SVG 图标管理
 	- 功能：管理与注册项目中的 SVG 图标，支持按需注册与在模板中通过图标名引用（例如 `<svg-icon name="home" />`）。
 	- 适用场景：前端需要统一管理大量 SVG 图标、按需加载或将 SVG 转为 Vue 组件时使用。
 	- 简要使用（示例）：
@@ -168,13 +164,9 @@
 		<svg-icon name="home" /> // home就是svg文件名称
 		```
 
-如果你希望我把每个工具改成更独立的包、补充 TypeScript 类型定义或为每个工具添加更详细示例（包含 demo 页面/脚本），告诉我你偏好，我可以继续实现。
-
 ## 开发与贡献
-
 - 欢迎提交 issue 或 PR：改进示例、添加 TypeScript 支持或增强兼容性。
 - 如需我为项目添加 `package.json`、TypeScript 类型文件或演示脚本，请告知偏好，我会继续补充。
 
 ## 许可证
-
 详见仓库根目录的 `LICENSE`。
