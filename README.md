@@ -44,12 +44,24 @@
 		```
 
 - `water/water-type.js` — 水质等级与颜色映射（Vue 组合式写法）
-	- 功能：导出水质等级数组 `typeList` 与基于等级返回颜色的计算属性 `backColor`。
+	- 功能：导出水质等级数组 `typeList` 与基于等级返回颜色的计算属性 `waterColor`。
 	- 适用场景：在水质相关展示页面中根据等级渲染不同颜色或标签。
 	- 简要使用（在 Vue 组件中）：
 		```javascript
-		import { typeList, backColor } from '@/water/water-type.js'
-		// 在模板中： :style="{ background: backColor(3) }"
+		import { waterTypeList, waterColor } from '@/water/water-type.js'
+		// 在模板中： :style="{ background: waterColor(3) }"
+		```
+
+- `mqtt/index.js` — MQTT 客户端封装
+	- 功能：基于 `mqtt`（npm 包）封装的轻量客户端类 `MQTTClient`，支持连接、订阅、接收消息、发送和断开连接。
+	- 适用场景：需要通过 WebSocket 或 TCP 与 MQTT Broker 通信时使用（例如实时数据推送、设备消息接收）。
+	- 简要使用：
+		```javascript
+		import MQTTClient from './mqtt/index.js'
+		const client = new MQTTClient('wss://broker.emqx.io:8084/mqtt', 'test/topic', { username: 'user', password: 'pass' })
+		client.connect()
+		client.onMessage((topic, msg) => console.log(topic, msg))
+		client.publish('test/topic', 'hello')
 		```
 
 如果你希望我把每个工具改成更独立的包、补充 TypeScript 类型定义或为每个工具添加更详细示例（包含 demo 页面/脚本），告诉我你偏好，我可以继续实现。

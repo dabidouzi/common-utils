@@ -8,7 +8,7 @@
 import { computed } from 'vue'
 
 // 按照等级返回颜色
-export const backColor = computed(() => {
+export const waterColor = computed(() => {
     return value => {
         const v = typeList.find(item => item.value === value)?.color
 
@@ -17,7 +17,7 @@ export const backColor = computed(() => {
 })
 
 // 水质类别颜色划分
-export const typeList = [
+export const waterTypeList = [
     {
         value: 1,
         label: 'Ⅰ类',
