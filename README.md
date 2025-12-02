@@ -102,10 +102,31 @@ exportSingleSheetXlsx({
 
 ```javascript
 // 多表示例
-const sheet1 = { sheetName: '用户表', headers: ['姓名', '年龄'], data: [{ name: '张三', age: 25 }], colWidths: [15, 8] };
-const sheet2 = { sheetName: '订单表', headers: ['订单号', '金额'], data: [{ orderNo: 'OD001', amount: 100 }], formatFn: (item, header) => header === '金额' ? `${item.amount}元` : item[header.toLowerCase()] };
+const sheet1 = {
+	sheetName: '用户表',
+	headers: ['姓名', '年龄'],
+	data: [
+		{ name: '张三', age: 25 }
+	],
+	colWidths: [15, 8]
+};
 
-exportMultiSheetXlsx({ sheets: [sheet1, sheet2], fileName: '用户订单汇总' });
+const sheet2 = {
+	sheetName: '订单表',
+	headers: ['订单号', '金额'],
+	data: [
+		{ orderNo: 'OD001', amount: 100 }
+	],
+	formatFn: (item, header) => {
+		if (header === '金额') return `${item.amount}元`;
+		return item[header.toLowerCase()];
+	}
+};
+
+exportMultiSheetXlsx({
+	sheets: [sheet1, sheet2],
+	fileName: '用户订单汇总'
+});
 ```
 
 ## API（简要）
