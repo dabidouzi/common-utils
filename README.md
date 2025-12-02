@@ -64,6 +64,29 @@
 		client.publish('test/topic', 'hello')
 		```
 
+- `svg-icon/` — SVG 图标管理
+	- 功能：管理与注册项目中的 SVG 图标，支持按需注册与在模板中通过图标名引用（例如 `<svg-icon name="home" />`）。
+	- 适用场景：前端需要统一管理大量 SVG 图标、按需加载或将 SVG 转为 Vue 组件时使用。
+	- 简要使用（示例）：
+		```javascript
+		1. 先安装vite-plugin-svg-icons插件
+			yarn add vite-plugin-svg-icons
+		2. 在vite-config.js中配置插件
+			createSvgIconsPlugin({
+                // 指定需要缓存的svg图标文件夹，即需要识别的svg都应该放在这个文件夹下  src/assets/svg可以更换为你项目中的svg存放路径
+                iconDirs: [path.resolve(process.cwd(), 'src/assets/svg')],
+                // 或
+                // iconDirs: [pathResolve('./src/assets')],
+                // 指定symbolId格式（这里的配置与6.2步骤中的引入svg组件的name配置项写法有关）
+                symbolId: 'icon-[dir]-[name]'
+            })
+		3. 使用组件
+			// 引入组件
+			import svgIcon from './svg-icon/index.js'
+			// 然后在模板中使用： 
+			<svg-icon name="home" /> // home就是svg文件名称
+		```
+
 如果你希望我把每个工具改成更独立的包、补充 TypeScript 类型定义或为每个工具添加更详细示例（包含 demo 页面/脚本），告诉我你偏好，我可以继续实现。
 
 ## 快速开始
