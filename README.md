@@ -29,7 +29,7 @@
 	- 简要使用：
 
 		```powershell
-		npm install xlsx
+		yarn install xlsx
 		```
 		
 		```javascript
@@ -121,35 +121,51 @@
 	- 功能：基于 `mqtt`（npm 包）封装的轻量客户端类 `MQTTClient`，支持连接、订阅、接收消息、发送和断开连接。
 	- 适用场景：需要通过 WebSocket 或 TCP 与 MQTT Broker 通信时使用（例如实时数据推送、设备消息接收）。
 	- 简要使用：
+		```powershell
+		yarn add mqtt
+		```
+
 		```javascript
+		// 引入
 		import MQTTClient from './mqtt/index.js'
+		// 创建实例
 		const client = new MQTTClient('wss://broker.emqx.io:8084/mqtt', 'test/topic', { username: 'user', password: 'pass' })
+		// 连接
 		client.connect()
+		// 接收消息
 		client.onMessage((topic, msg) => console.log(topic, msg))
+		// 发送消息
 		client.publish('test/topic', 'hello')
+		// 断开
+		client.disconnect()
 		```
 
 - `svg-icon/` — SVG 图标管理
 	- 功能：管理与注册项目中的 SVG 图标，支持按需注册与在模板中通过图标名引用（例如 `<svg-icon name="home" />`）。
 	- 适用场景：前端需要统一管理大量 SVG 图标、按需加载或将 SVG 转为 Vue 组件时使用。
 	- 简要使用（示例）：
+
+		```powershell
+		yarn add vite-plugin-svg-icons
+		```
+
 		```javascript
-		1. 先安装vite-plugin-svg-icons插件
-			yarn add vite-plugin-svg-icons
-		2. 在vite-config.js中配置插件
-			createSvgIconsPlugin({
-                // 指定需要缓存的svg图标文件夹，即需要识别的svg都应该放在这个文件夹下  src/assets/svg可以更换为你项目中的svg存放路径
-                iconDirs: [path.resolve(process.cwd(), 'src/assets/svg')],
-                // 或
-                // iconDirs: [pathResolve('./src/assets')],
-                // 指定symbolId格式（这里的配置与6.2步骤中的引入svg组件的name配置项写法有关）
-                symbolId: 'icon-[dir]-[name]'
-            })
-		3. 使用组件
-			// 引入组件
-			import svgIcon from './svg-icon/index.js'
-			// 然后在模板中使用： 
-			<svg-icon name="home" /> // home就是svg文件名称
+		// vite-config.js 配置插件
+		createSvgIconsPlugin({
+			// 指定需要缓存的svg图标文件夹，即需要识别的svg都应该放在这个文件夹下  src/assets/svg可以更换为你项目中的svg存放路径
+			iconDirs: [path.resolve(process.cwd(), 'src/assets/svg')],
+			// 或
+			// iconDirs: [pathResolve('./src/assets')],
+			// 指定symbolId格式（这里的配置与6.2步骤中的引入svg组件的name配置项写法有关）
+			symbolId: 'icon-[dir]-[name]'
+		})
+		```
+
+		```javascript
+		// 引入组件
+		import svgIcon from './svg-icon/index.js'
+		// 模板中使用： 
+		<svg-icon name="home" /> // home就是svg文件名称
 		```
 
 如果你希望我把每个工具改成更独立的包、补充 TypeScript 类型定义或为每个工具添加更详细示例（包含 demo 页面/脚本），告诉我你偏好，我可以继续实现。
