@@ -3,11 +3,6 @@
 一个轻量的实用工具集合
 
 ## 文件说明
-- `export-excel/exportXlsx.js` XLSX 导出
-- `vue-compose-element` 在运行时返回 Vue 组件 DOM
-- `water/water-type.js` 水质等级与颜色映射（Vue 组合式写法）
-- `mqtt/index.js` MQTT 客户端封装
-- `svg-icon` SVG 图标管理
 - `README.md`：项目说明（本文件）
 - `LICENSE`：许可证
 
@@ -92,16 +87,7 @@
 		- 返回 `true` | `false` 表示导出是否成功
 		- `exportSingleSheetXlsx(config)`：简化调用（内部调用 `exportMultiSheetXlsx`）
 
-- `vue-compose-element/index.js` — 在运行时返回 Vue 组件 DOM
-	- 功能：动态创建一个 Vue 应用并挂载传入组件，返回组件的 DOM 元素（`$el`）。内部会使用项目路由实例。
-	- 适用场景：需要把 Vue 单文件组件渲染成原生 DOM（例如在非 Vue 插件/第三方组件中嵌入 Vue 组件）。
-	- 简要使用：
-		```javascript
-		import MyComponent from '@/components/MyComponent.vue'
-		import { returnVueComponentElement } from 'vue-compose-element'
-		const el = returnVueComponentElement(MyComponent, { propA: 1 })
-		document.body.appendChild(el)
-		```
+
 
 - `water/water-type.js` — 水质等级与颜色映射（Vue 组合式写法）
 	- 功能：导出水质等级数组 `typeList` 与基于等级返回颜色的计算属性 `waterColor`。
@@ -133,6 +119,56 @@
 		client.publish('test/topic', 'hello')
 		// 断开
 		client.disconnect()
+		```
+
+- `loading/index.js` — 全局loading效果
+	- 功能：提供全局 Loading 组件与插件，支持动态显示/隐藏加载动画（支持自定义加载提示文字），内置 CSS 动画效果。
+	- 适用场景：需要在页面加载、数据请求或长时任务时显示全局加载指示器，提升用户体验。
+	- 简要使用：
+		```powershell
+		yarn add loaders.css
+		```
+
+		```javascript
+		// main.js - 注册为全局插件
+		import { loading } from './component/loading/index.js'
+		app.use(loading)
+		```
+
+		```javascript
+		// 组件内使用
+		export default {
+			methods: {
+				async fetchData() {
+					this.$loading.show('正在加载数据...')
+					try {
+						// 执行异步操作
+						await someAsyncTask()
+					} finally {
+						this.$loading.hide()
+					}
+				}
+			}
+		}
+		```
+
+		或直接导入 `load` 对象：
+
+		```javascript
+		import { load } from './component/loading/index.js'
+		load.show('拼命加载中...')
+		load.hide()
+		```
+
+- `vue-compose-element/index.js` — 在运行时返回 Vue 组件 DOM
+	- 功能：动态创建一个 Vue 应用并挂载传入组件，返回组件的 DOM 元素（`$el`）。内部会使用项目路由实例。
+	- 适用场景：需要把 Vue 单文件组件渲染成原生 DOM（例如在非 Vue 插件/第三方组件中嵌入 Vue 组件）。
+	- 简要使用：
+		```javascript
+		import MyComponent from '@/components/MyComponent.vue'
+		import { returnVueComponentElement } from 'vue-compose-element'
+		const el = returnVueComponentElement(MyComponent, { propA: 1 })
+		document.body.appendChild(el)
 		```
 
 - `svg-icon` — SVG 图标管理

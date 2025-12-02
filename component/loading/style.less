@@ -1,0 +1,34 @@
+.loading {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+    flex-wrap: wrap;
+    z-index: 999;
+
+    .loader {
+        flex: 0 0 auto;
+        display: flex;
+        width: 100%;
+        height: 100px;
+        align-items: center;
+        justify-content: center;
+
+        .ball-spin-fade-loader > div {
+            background-color: var(--ant-primary-color);
+        }
+    }
+
+    .loading-text {
+        margin-top: 16px;
+        font-size: 18px;
+        letter-spacing: 3px;
+         font-family: '微软雅黑';
+    }
+}
